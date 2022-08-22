@@ -21,5 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('comment/{product_id}',[commentController::class,'index']);
 Route::post('comment',[commentController::class,'create']);
+Route::get('pagination',[commentController::class,'pagination'])->name('Pagination');
 
 

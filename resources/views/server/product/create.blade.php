@@ -4,54 +4,54 @@
 
 @section('content')
     <a class="btn btn-primary" href="{{ route('products.store') }}">quay lại</a>
-  <br>
+    <br>
     <form action="{{ route('products.store') }}" method="post" enctype="multipart/form-data">
         @csrf
-        @if($errors->any())
-    <ul>
-        @foreach($errors->all() as $error)
-<li class="text-danger">
-  {{  $error}}
-</li>
-        @endforeach
-    </ul>
+        @if ($errors->any())
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="text-danger">
+                        {{ $error }}
+                    </li>
+                @endforeach
+            </ul>
         @endif
         <div class="form-group">
             <label for="">name </label>
-            <input type="text" class="form-control" name="name" id="" value="{{old('name')}}" 
+            <input type="text" class="form-control" name="name" id="" value="{{ old('name') }}"
                 placeholder="">
 
         </div>
         <div class="form-group">
             <label for="">price</label>
-            <input type="text" class="form-control " name="price" id="" value="{{old('price')}}" 
+            <input type="text" class="form-control " name="price" id="" value="{{ old('price') }}"
                 placeholder="">
 
         </div>
         <div class="form-group">
             <label for="">qty</label>
-            <input type="text" class="form-control " name="qty" id="" value="{{old('qty')}}" 
+            <input type="text" class="form-control " name="qty" id="" value="{{ old('qty') }}"
                 placeholder="">
         </div>
 
         <div class="form-group">
             <label for="">image main</label>
-            <input type="file" class="form-control"  name="image" id="" value="{{old('image')}}" 
+            <input type="file" class="form-control" name="image" id="" value="{{ old('image') }}"
                 placeholder="">
         </div>
         <div class="form-group">
             <label for="">images</label>
-            <input type="file" class="form-control" multiple name="images[]" id="" value="{{old('image')}}" 
+            <input type="file" class="form-control" multiple name="images[]" id="" value="{{ old('image') }}"
                 placeholder="">
         </div>
         <div class="form-group">
             <label for="">slug</label>
-            <input type="text" class="form-control" name="slug" id="" value="{{old('slug')}}" 
+            <input type="text" class="form-control" name="slug" id="" value="{{ old('slug') }}"
                 placeholder="">
         </div>
         <div class="form-group">
             <label for="">sale</label>
-            <input type="text" class="form-control" name="sale" id="" value="{{old('sale')}}" 
+            <input type="text" class="form-control" name="sale" id="" value="{{ old('sale') }}"
                 placeholder="">
         </div>
         <div class="form-group">
@@ -71,29 +71,28 @@
         <div class="form-group">
             <label for="">status</label><br>
             <select name="status" id="" class="form-control">
-              
-                    <option value="0" >còn hàng</option>
-                    <option value="1" >hết hàng</option>
-              
+
+                <option value="0">còn hàng</option>
+                <option value="1">hết hàng</option>
+
             </select>
 
         </div>
 
         <div class="form-group">
             @foreach ($attrProducts as $attr)
-         
                 @if ($attr->parent_id === 0)
-                <label for="">{{ $attr->name }}</label> <br>
-                @foreach ($attr->child as $value)   
-                <label for="attr{{  $value->id }}" >
-                    <input size="100" style="width:200px" type="checkbox" name="attr_id[]" value="{{  $value->id }}" id="attr{{  $value->id }}"> {{  $value->name }} 
+                    <label for="">{{ $attr->name }}</label> <br>
+                    @foreach ($attr->child as $value)
+                        <label for="attr{{ $value->id }}">
+                            <input size="100" style="width:200px" type="checkbox" name="attr_id[]"
+                                value="{{ $value->id }}" id="attr{{ $value->id }}"> {{ $value->name }}
 
-                </label> <br>
-                     @endforeach
-              @endif   
-            
+                        </label> <br>
+                    @endforeach
+                @endif
             @endforeach
-          
+
         </div>
 
 
@@ -111,15 +110,10 @@
 @section('script')
 
     <script type="text/javascript">
+        CKEDITOR.replace('editor1');
 
-CKEDITOR.replace( 'editor1' );
-CKEDITOR.editorConfig = function( config )
-{
-    // Define changes to default configuration here. For example:
-    // config.language = 'fr';
-    // config.uiColor = '#AADC6E';
-    config.height = '800px';
-};
-
+        CKEDITOR.editorConfig = function(config) {
+            config.height = '800px';
+        };
     </script>
 @endsection

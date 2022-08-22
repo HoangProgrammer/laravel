@@ -26,7 +26,6 @@ class HomeController extends Controller
         }
 
 
-
         $products_new = Product::with('category')->select('name', 'price', 'slug', 'image', 'sale', 'category_id')
             ->orderBy('id', 'desc')
             ->paginate(8);

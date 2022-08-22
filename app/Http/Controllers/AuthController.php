@@ -52,12 +52,14 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
-            'status' => $request->status
+            'role_id' => 0,
+            'status' => 0
         ]);
         Alert::success('Đăng ký thành công');
         return back();
     }
+
+
 
 
     public function logout(Request $request)
@@ -69,6 +71,7 @@ class AuthController extends Controller
 
         return redirect()->route('getLogin');
     }
+
 
 
 
@@ -111,8 +114,7 @@ class AuthController extends Controller
                 return redirect()->route('home');
             }
         }
-
-
+        
         } catch (\Throwable $th) {
             throw $th;
         }

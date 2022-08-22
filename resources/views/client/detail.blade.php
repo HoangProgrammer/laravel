@@ -31,7 +31,6 @@
 
                     @foreach ($product->images as $key=>$image)
                   
-
                     @if( $key ==0 )
                     <div class="carousel-item active">
                         <img class="w-100 h-100" src=" {{ asset($image->image) }}" alt="Image">
@@ -163,8 +162,8 @@
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab-pane-1">
                     <h4 class="mb-3">Giới thiệu sản phẩm</h4>
-                    <p>
-                        {{$product->desc}}
+                    <p class="desc_text">
+                      {{ $product->desc}}
                     </p>
                 
                 </div>
@@ -191,10 +190,13 @@
                                 </div>
                             </div> --}}
                           </div>
-                          
+                          <div class="pagination">
+{{$comments->links()}}
+                          </div>
                           
                         </div>
                         <div class="col-md-6">
+                            @if(Auth::user())
                             <h4 class="mb-4">Nhận xét ở đây</h4>
                             {{-- <small>Your email address will not be published. Required fields are marked *</small> --}}
                             {{-- <div class="d-flex my-3">
@@ -233,6 +235,10 @@
 
                                 </ul>
                             </form>
+@else
+
+<h3>đăng nhập để nhận xét</h3>
+@endif
                         </div>
                     </div>
                 </div>
@@ -307,18 +313,32 @@
 @endif
 @section('script')
 
-    <script type="text/javascript">
+    <script type="text/javascript"> 
+
+    let desc=@json($product->desc);
+    $('.desc_text').html(desc);
+    // console.log(desc);
+
+
         $(function() {
+
             let url=document.location.origin;
 
 
-            function  FetchComment( product_id=$('#product_id').val(), data=[]){
-                // console.log(product_id);
-            axios.get(url+'/api/comment/'+product_id).then(function(res){
-                // console.log();
-          let comments= res.data.data.map(function(value ,key){
-            // console.log(value.user.name);
-                let arr=''
+            function  FetchComment(){
+                let id=$('input[name="id"]').val()
+            axios.get(url+'/api/comment/'+id).then(function(res){
+                // console.log(res);
+                FetchData(id,res.data.data)
+            }         
+            )       
+            }
+
+  
+         function  FetchData(id=$('input[name="id"]').val(), data=[]){
+            let comments=data.map(function(value ,key){
+            // console.log(value);    
+                let arr='';
                             for (let i = 0; i <5; i++) {
                 if(value.rating<=i){
                     arr +=`<i class="fas fa-star text-dark"></i>`
@@ -326,8 +346,7 @@
                 }else{
                     arr +=`<i class="fas fa-star"></i>` 
                 }
-                                                                    
-                                                    }
+                }
                 return  `<div class="media mb-4">
                                 <img src="${ value.user.google_id==null || value.user.fackebook_id==null ? value.user.avatar :   url+'/'+value.user.avatar}" alt="Image" class=" mr-3 mt-1"
                                     style="width: 45px;">
@@ -342,24 +361,53 @@
                                 </div>
                             </div> `
                 })
-                $('.countComment').html(res.data.data.length)
+                // console.log(res.data.data.length);
+                $('.countComment').html(data.length)
                 $('#showComments').html(comments)
-
-// let paginations=res.data.links.map(function(value,key){
-//     console.log(value);
-// })
-
-
-
-            })
+                
             }
 
+      
             FetchComment()  
+            FetchData() 
+         
+
 
 
             
-    
-       console.log(url);
+                            $(document).on('click','.page-link' ,function(e){
+
+                e.preventDefault();
+                $(this).closest('.page-item').addClass('active').siblings().removeClass('active')
+                let id=$('input[name="id"]').val();
+                let page=''
+                if($(this).attr('href')){
+                    page=$(this).attr('href').split('page=')[1]
+                }else{
+                    page=''
+                }
+
+                $.ajax({
+                    method: 'GET',
+                    url:"{{route('Pagination')}}",
+                    data:{
+                        page:page,
+                        product_id:id
+                    },  
+                    success: function(data){        
+                        console.log(data);     
+                        FetchData(id,data.data)
+                    }
+
+                })
+                })
+                
+
+
+
+
+
+    //    console.log(url);
             $("#rateYo").rateYo({
                 rating: 0,
                 fullStar: true,
@@ -367,6 +415,11 @@
                     $('#rating').val(rating);
                 }
             });
+
+
+
+
+
 
             $('#send').on('click', function(e){
                 e.preventDefault();
@@ -406,12 +459,16 @@
                     //  $('.showerror').append(`<li class="text-danger"> ${response.data.errors}</li>`)
 
                     }else{
+                     
+                        $('li.page-item').addClass('active')[1]
+                        $('li.page-item').removeClass('active')
                         FetchComment()  
                         // console.log(response.data);
                     }
             
 
                 })
+
             })
            
         });

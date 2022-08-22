@@ -38,17 +38,20 @@
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" data-value="5" class="price-select custom-control-input" id="price-1">
-                            <label class="custom-control-label" for="price-1">từ 5 - 10 triệu</label>
+                            <input type="checkbox" data-value="1000000" price-to="10000000"
+                                class="price-select custom-control-input" id="price-1">
+                            <label class="custom-control-label" for="price-1">từ 1 - 10 triệu</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" data-value="10" class="price-select custom-control-input" id="price-2">
+                            <input type="checkbox" data-value="10000000" price-to="20000000"
+                                class="price-select custom-control-input" id="price-2">
                             <label class="custom-control-label" for="price-2">từ 10 - 20 triệu</label>
                             <span class="badge border font-weight-normal">295</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" data-value="20" class="price-select custom-control-input" id="price-3">
+                            <input type="checkbox" data-value="20000000"d price-to="100000000"
+                                class="price-select custom-control-input" id="price-3">
                             <label class="custom-control-label" for="price-3">Trên 20 triệu</label>
                             <span class="badge border font-weight-normal">246</span>
                         </div>
@@ -229,53 +232,140 @@
         $(document).ready(function() {
             const URL = window.location.href;
             const url = window.location.origin;
-            let data = []
-            function filter_by_attr(db) {
 
+            let data = []
+
+
+            // tạo hàm gọi api
+            function filter_by_attr(db) {
                 console.log(db);
                 let arrPrice = []
-                let arrsort = []
-
                 let cate = {{ $category->id }}
+                // console.log(db.price);
+                // db.map(function(value, key) {
+                //  console.log(value);
+                //     if (value.price !== null) {
+                //         arrPrice.push(value.price,value.priceTo)
 
-                db.map(function(value, key) {
-
-                    if (value.price != null) {
-                        arrPrice.push(value.price)
-                    }
-                    if (value.sort != null) {
-                        arrsort.push(value.arrsort)
-                    }
-
-
-                })
-                
+                // }
+                // }
+                // )
+                // console.log(db);
 
                 $.ajax({
                     method: 'GET',
                     url: `${URL}/select/`,
                     data: {
-                        price: arrPrice,
-                        cate: cate,
-                        sort: arrsort
+                        price: db,
+                        cate: cate
                     },
 
                     success: function(res) {
                         console.log(res.data);
                         //  console.log( res.data.length);
                         let db = res.data.flat()
-
                         fetchData(db)
                     }
                 })
             }
 
 
+            // end func api
+
+            //  xử lý mảng trùng nhau
+            // function dataMerge(db1 = []) {
+            //     let newdata = db1.concat(db1);
+            //     let unique = newdata.filter((c, index) => {
+            //         // console.log(c);  
+            //         // console.log("i:"+index);
+            //         return newdata.indexOf(c) === index;
+
+            //     });
+            //     console.log(unique);
+            //     filter_by_attr(unique)
+            // }
+
+
+            // lọc theo giá
+            $(document).on('click', '.price-select', function(e) {
+
+                // kiểm tra tồn tại của phần tử trong mảng
+                let priceForm = Number($(this).attr('data-value'))
+                let priceTo = Number($(this).attr('price-to'))
+
+
+                if (data.find((value) => value.price === priceForm)) {
+                    // nếu có phần tử thì loại bỏ trong mảng
+                    data = data.filter((val) => val.price !== priceForm)
+                  
+                } else {
+                    // nếu không có thêm vào
+                    data.push({
+                        price: Number(priceForm),
+                        priceTo: Number(priceTo)    
+                    })
+                }
+
+                
+
+                //  kiểm tra có bao nhiêu input[checkbox] được chọn 
+                let notChecked = $('input.price-select[type=checkbox]:checked').length
+                if (notChecked == 0) {
+                    $('#price-all').prop('checked', true)
+                    filter_by_attr(data = [])
+                    
+                }
+
+
+                // kiểm tra phần tử được checkbox
+                if (e.target.checked === true) {
+
+                    if (e.target.id === 'price-all') {
+                        data = []
+                        // })
+
+                        // nếu là tất cả thì tất cả các ptu khác uncheckbox
+                        $('.price-select').each(function(k) {
+                            $('#price-' + k).prop('checked', false);
+                        })
+
+                        // phần tử all đc check 
+                        $(this).checked = true
+
+
+                        // data = data.filter((v) => v.price)
+
+                        // console.log(data);
+                        filter_by_attr(data)
+
+                    } else {
+
+                        $('#price-all').prop('checked', false)
+                        // filter_by_attr(data)
+
+
+
+                    }
+
+                }
+
+                filter_by_attr(data)
+
+            })
+
+
+
+
+
             function fetchData(data) {
+                // console.log(data);   
+
+
+
+
                 let html = data.map(function(value, key) {
-                    let priceSale = (value.sale !== 0) ? value.price * (100 - value.sale) / 100 : value
-                        .price
-                    let price = (value.sale != 0) ? value.price : ''
+                    var priceSale = (value.sale !== 0) ? Number(value.price )* (100 - value.sale) / 100 :Number(value.price )
+                    var price = value.sale !== 0 ? Number(value.price ) : ''
                     return `
                        <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
                             <div class="card product-item border-0 mb-4">
@@ -305,99 +395,31 @@
     `
                 })
 
-                $('.show-product').html(html)
-            }
+           
 
+                if (html == '') {
+                    let nodata = `<h3 class="text-dark"> Không thấy dữ liệu phù hợp </h3>`;
 
-
-
-
-
-
-
-            //  xử lý mảng
-            function dataMerge(db1 = []) {
-                let newdata = db1.concat(db1);
-                let unique = newdata.filter((c, index) => {
-                    // console.log("c:"+newdata.indexOf(c));
-                    // console.log("i:"+index);
-                    return newdata.indexOf(c) === index;
-
-                });
-
-                // console.log(unique);
-
-                filter_by_attr(unique)
-            }
-
-
-
-
-
-
-            // tạo một mảng rỗng chứa input checbox
-        
-
-
-            // Tìm kiếm theo giá
-            $(document).on('click', '.price-select', function(e) {
-
-                let priceCheck = Number($(this).attr('data-value'))
-                // kiểm tra tồn tại của phần tử trong mảng
-
-                if (data.find((value) => value.price === priceCheck)) {
-                    // nếu có phần tử thì loại bỏ trong mảng
-                    data = data.filter((val) => val.price !== priceCheck)
+                    $('.show-product').html(nodata)
                 } else {
-                    // nếu không có thêm vào
-                    data.push({
-                        price: Number(priceCheck)
-                    })
-                }
-
-                //  kiểm tra có bao nhiêu input[checkbox] được chọn 
-                let notChecked = $('input.price-select[type=checkbox]:checked').length
-                if (notChecked == 0) {
-                    $('#price-all').prop('checked', true)
-                    // filter_by_attr(data)
-                }
-
-
-                // kiểm tra phần tử được checkbox
-                if (e.target.checked === true) {
-
-                    if (e.target.id === 'price-all') {
-                        // nếu là tất cả thì tất cả các ptu khác uncheckbox
-
-                        $('.price-select').each(function(k) {
-                            $('#price-' + k).prop('checked', false);
-                        })
-                        // phần tử đc check 
-                        $(this).checked = true
-
-                        data = data.filter((v) => v.price)
-                        // console.log(data);
-                        dataMerge(data)
-
-                    } else {
-                        // console.log(data);
-                        $('#price-all').prop('checked', false)
-                        // filter_by_attr(data)
-                    }
+                    $('.show-product').html(html)
 
                 }
-                dataMerge(data)
-
-            })
 
 
+            }
 
-            $(document).on('change', '#list-select', function() {
-                data.push({
-                    sort: $(this).val()
-                });
-                dataMerge(data)
-            })
+
+
+
+
+
+            // $(document).on('change', '#list-select', function() {
+            //     data.push({
+            //         sort: $(this).val()
+            //     });
+            //     dataMerge(data)
+            // })
 
 
 
@@ -405,8 +427,9 @@
 
             $('#searchProduct').keyup(function(e) {
                 let cate = {{ $category->id }}
-                console.log('log' + cate);
-                axios.get(`${URL}/search`, {
+                // console.log('log' + cate);
+                setTimeout(() => {
+                    axios.get(`${URL}/search`, {
                     params: {
                         name: e.target.value,
                         cate: cate
@@ -414,7 +437,9 @@
                 }).then(function(res) {
                     // console.log(res.data.data);
                     fetchData(res.data.data)
-                })
+                }) 
+                }, 1000);
+            
             })
 
         })

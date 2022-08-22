@@ -18,6 +18,11 @@ class ShoppingController extends Controller
 
     function  index(Request $request)
     {
+
+       if (!Auth::user()) {
+            return redirect()->route('getLogin');
+        } 
+
         $request->validate(
             [
                 'size' => 'required',
@@ -29,11 +34,11 @@ class ShoppingController extends Controller
                 'color.required' => 'vui lòng chọn màu'
             ]
         );
+
+        
         // session()->forget('cart');
         // dd('end');
-        if (!Auth::user()) {
-            return redirect()->route('getLogin');
-        }
+      
 
         $cart = [];
         $attr = [
@@ -43,18 +48,20 @@ class ShoppingController extends Controller
 
 
         $product = Product::find($request->id);
-        $cart = session()->get('cart');
+        $cart = session()->get('cart'); 
 
         // tồn tại thì tăng số lượng phần tử
         if (isset($cart[$product->id])) {
 
-            if ($cart[$product->id]['qty'] >= $product->qty) {
+            if ($cart[$product->id]['qty'] >= $product->qty ) {
                 $cart[$product->id]['qty'] = $product->qty;
             } else {
                 $cart[$product->id]['qty'] = $cart[$product->id]['qty'] + $request->qty;
             }
 
         } else {
+
+
             // chưa có thì thêm mới
             $cart[$request->id] = [
                 'image' => $product->image,
@@ -65,6 +72,8 @@ class ShoppingController extends Controller
                 'attr' =>  $attr,
                 'user_id' => Auth::user()->id
             ];
+
+
         }
 
         session()->put('cart', $cart);
@@ -77,6 +86,8 @@ class ShoppingController extends Controller
         return back();
 
     }
+
+
 
 
 
@@ -105,7 +116,7 @@ class ShoppingController extends Controller
     
     public function deleteCart($id)
     {
-        $cart = session()->get('cart');
+        $cart  = session()->get('cart');
          unset($cart[$id]);
          session()->put('cart', $cart);
          return back();
@@ -118,16 +129,7 @@ class ShoppingController extends Controller
 
     public function shopping()
     {
-        //  Cookie::forget('cart');
-        // $cookie=stripslashes(Cookie::get('cart'));
-        // $cartcookie=json_decode($cookie,true,JSON_UNESCAPED_UNICODE);
-        // dd($cartcookie);
 
-        // foreach($cartcookie as $value){
-        // dd($value['name']);   
-        // }
-        // session()->forget('cart');
-        // print_r(session()->get('cart'));
         $cart = session()->get('cart');
         // dd( $cart);
         return view(
@@ -150,28 +152,26 @@ class ShoppingController extends Controller
         # code...
     }
 
+
+
     public function postCheckout(Request $request)
     {
         $cart = session()->get('cart');
 
-        // dd($request->all());
-        $order = Order::create([
-            'user_id' => Auth::user()->id,
-            'orderDate' => date('Y-m-d H:i:s'),
-            'note' => $request->note,
-            'status' => 0,
-            'totalCost' => $request->totalCost,
-            'address' => $request->address,
-            'city' => $request->city
-        ]);
-
-        
+        $order =new Order();
+        $order->fill($request->all());
+        $order ->user_id = Auth::user()->id;
+        $order ->orderDate = date('Y-m-d H:i:s');
+        $order ->status = 0;
+        $order->save();
+     
         $orderNew = Order::select('id')->orderBy('id', 'DESC')->first();
-        // dd( $orderNew->id);
+
 
         foreach ($cart as $item) {
-            $attr = $item['attr']['color'];
-            $attr .= ',' . $item['attr']['size'];
+
+            $attr  = $item['attr']['color'];
+            $attr .= ','.$item['attr']['size'];
 
             Order_detail::create(
                 [
@@ -183,16 +183,8 @@ class ShoppingController extends Controller
             );
         }
 
-        // User::find(Auth::user()->id)->update([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'phone' => $request->phone,
-        //     'address' => $request->address,
-        // ]);
-
         session()->forget('cart');
         Alert::success('Chúc mừng bạn đã Mua Hàng thành công :))');
-
         return redirect()->route('order');
     }
 }

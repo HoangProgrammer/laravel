@@ -24,28 +24,25 @@
         <form action="{{route('checkout')}}" method="post">
             @csrf
         <div class="row px-xl-5">
-
-
-
             <div class="col-lg-6">
                 <div class="mb-4">
-                    <h4 class="font-weight-semi-bold mb-4">Địa chỉ thanh toán</h4>
+                    <h4 class="font-weight-semi-bold mb-4">Địa chỉ nhận hàng</h4>
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label>tên</label>
-                            <input class="form-control" type="text" name="name" placeholder="Doe"  value="{{Auth::user()->name}}">
+                            <input class="form-control" type="text" name="name" placeholder="Doe"  value="">
                         </div>
                         <div class="col-md-6 form-group">
                             <label>E-mail</label>
-                            <input class="form-control" type="text" name="email" placeholder="example@email.com" value="{{Auth::user()->email}}">
+                            <input class="form-control" type="text" name="email" placeholder="example@email.com" value="">
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Điện Thoại </label>
-                            <input class="form-control" type="text" name="phone" placeholder="+123 456 789"  value="{{Auth::user()->phone}} {{old('phone')}}">
+                            <input class="form-control" type="text" name="phone" placeholder="+123 456 789"  value=" {{old('phone')}}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <label>Địa chỉ 1</label>
-                            <input class="form-control" type="text" name="address" placeholder="123 Street"  value="{{Auth::user()->address}}"  {{old('address')}}>
+                            <label>Địa chỉ </label>
+                            <input class="form-control" type="text" name="address" placeholder="123 Street"  value=""  {{old('address')}}>
                         </div>
       
                         <div class="col-md-6 form-group">
@@ -58,76 +55,35 @@
                         </div>
            
                     
-                        <div class="col-md-12 form-group">
+                        {{-- <div class="col-md-12 form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="newaccount" name="updateaccount" >
                                 <label class="custom-control-label" for="newaccount">Cập nhật tài khoản </label>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- <div class="col-md-12 form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
+                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">địa chỉ khác</label>
                             </div>
                         </div> --}}
                     </div>
                 </div>
-
-                {{-- <div class="collapse mb-4" id="shipping-address">
-                    <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>Họ</label>
-                            <input class="form-control" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Tên</label>
-                            <input class="form-control" type="text"placeholder="Doe" >
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label> Số Điện Thoại</label>
-                            <input class="form-control" type="text"  placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Địa chỉ 1</label>
-                            <input class="form-control" type="text"placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Địa chỉ 2</label>
-                            <input class="form-control" type="text" value="" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Thành phố</label>
-                            <select lect class="custom-select">
-                                <option selected>Hà Nội</option>
-                                <option>Hải Phòng</option>
-                                <option>TP.HỒ CHÍ MINH</option>
-                                <option>Cà Mau</option>
-                                <option>Thanh Hóa</option>
-                                <option>Bến Tre</option>
-                                <option>Lạng Sơn</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Thành Phố</label>
-                            <input class="form-control" type="text" value="" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" value="" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>ZIP  </label>
-                            <input class="form-control" type="text" value="" placeholder="123">
-                        </div>
-                    </div>
-                </div> --}}
+                
             </div>
+
+
+
+
+
+
+
+
+
+
+
+            
             <div class="col-lg-6">
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">

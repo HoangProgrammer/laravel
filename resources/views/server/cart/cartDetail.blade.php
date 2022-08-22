@@ -1,5 +1,5 @@
 @extends('server.LayoutServer')
-@section('title','Danh sách Chi tiết đơn hàng')
+@section('title','Danh sách Chi tiết Đơn hàng')
 @section('header', 'Danh sách Chi tiết Đơn Hàng')
 
 

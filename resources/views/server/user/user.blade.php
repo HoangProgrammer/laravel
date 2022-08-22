@@ -56,7 +56,17 @@
                     <td>{{ $value['username'] }}</td>
                     <td>{{ $value['email'] }}</td>
                     <td>{{ $value['phone'] }}</td>
-                    <td><img width="150px" src={{  $value->google_id==null && $value->facebook_id == null  ? asset($value->avatar): $value->avatar}} alt=""></td>
+                    <td><img width="100px" src="
+                @if($value->avatar===null)          
+               {{  asset('/images/users/user-defaul.jpg') }} 
+                @else
+                   {{                 
+                    $value->google_id==null && $value->facebook_id == null  ? asset($value->avatar) : $value->avatar                                 
+                    }} 
+                @endif
+                 
+                    
+                   " alt=""></td>
                     <td>
                         <a title="nhấn vào cập nhật" class="btn btn-secondary" href="{{route('users.role',$value->id)}}">
                             {{ $value['role_id'] == 0 ? 'người dùng' : 'admin' }}

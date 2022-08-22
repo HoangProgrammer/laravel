@@ -138,12 +138,14 @@
         $('.changeAttr').css("display","block");  
     })
 
-    CKEDITOR.replace( 'editor1' );
+    CKEDITOR.replace( 'editor1');
+        
 CKEDITOR.editorConfig = function( config )
 {
+    config.format_tags = 'p;h1;h2;h3;h4;h5;h6;pre;div';
     // Define changes to default configuration here. For example:
     // config.language = 'fr';
-    // config.uiColor = '#AADC6E';
+    // config.uiColor = '#AADC6E';  
     config.height = '800px';
 };
     </script>

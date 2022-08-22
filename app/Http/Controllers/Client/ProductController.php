@@ -11,63 +11,32 @@ class ProductController extends Controller
     //
     function select(Request $request)
     {
-        $arr = [];
-        $arr1 = [];
-        if ($request->price != [] ) {
 
+        $arr = [];
+        
+        if ($request->price !== null) {
 
             foreach ($request->price as $value) {
-                if ($value == '5') {
-                    $products = Product::with(['attrs', 'category'])
-                        ->where('category_id',  $request->cate)
-                        ->where(function ($query) {
-                            $query->where('price', '>', 100)
-                                ->where('price', '<', 10000000);
-                        })->get();
-                }
-                if ($value == '10') {
-                    $products = Product::with(['attrs', 'category'])
-                        ->where('category_id',  $request->cate)
-                        ->where(function ($query) {
-                            $query->where('price', '>', 10000000)
-                                ->where('price', '<=', 20000000);
-                        })->get();
-                }
-                if ($value == '20') {
-                    $products = Product::with(['attrs', 'category'])
-                        ->where('category_id',  $request->cate)
-                        ->where('price', '>', 20000000)
-                        ->get();
-                }
 
+                $products = Product::select('price', 'sale', 'name', 'category_id', 'id', 'image','slug')
+                    ->with(['attrs', 'category'])                
+                    ->where('category_id',  $request->cate)
+                    ->where('price', '>', (int)$value['price']) 
+                    ->where('price', '<=', (int)$value['priceTo'])->get();               
+                
+                
+                    array_push($arr, $products);
+                
+            }   
 
-                array_push($arr, $products);
-            }
         } else {
+
             $products = Product::with(['attrs', 'category'])
+                ->select('price', 'sale', 'name', 'category_id', 'id', 'image')
                 ->where('category_id',  $request->cate)
                 ->get();
-            array_push($arr, $products);
+            $arr=$products;
         }
-
-
-        
-        // if ($request->sort != null) {
-        //     foreach ($request->price as $value) {
-        //         if ($value == 'desc') {
-        //             $products = Product::with( 'category')
-        //             ->orderBy('price','desc')
-        //                 ->where('category_id',  $request->cate)
-        //                 ->get();
-        //         }
-
-        //     }
-        //     array_push($arr, $products);
-
-        // }
-
-
-
 
         return response()->json(
             [
@@ -75,7 +44,12 @@ class ProductController extends Controller
                 'status' => 200
             ]
         );
+
     }
+
+
+
+
 
     public function search(Request $request)
     {
@@ -94,7 +68,7 @@ class ProductController extends Controller
             ->with(['attrs', 'category'])
             ->get();
 
-        return view('client.search',compact('products'));
+        return view('client.search', compact('products'));
         # code...
     }
 }

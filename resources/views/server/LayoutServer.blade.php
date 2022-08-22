@@ -193,10 +193,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{{asset('dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
+          <img src="{{ asset(Auth::user()->avatar)}}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{Auth::user()->name}}</a>
         </div>
       </div>
 
@@ -230,7 +230,7 @@
             <a href="{{Route('users')}}" class="nav-link  {{ (request()->is('admin/users')) ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
               <p>
-            Users
+          Danh sách  Khách hàng
               </p>
             </a>
           </li>
@@ -239,7 +239,7 @@
             <a href="{{Route('products')}}" class="nav-link {{ (request()->is('admin/products')) ? 'active' : '' }}">
               <i class="fab fa-product-hunt"></i>
               <p>
-             Products
+          Danh sách Sản phẩm
            
               </p>
             </a>
@@ -254,10 +254,19 @@
             </a>
           </li>
           <li class="nav-item ">
-            <a href="{{Route('orders')}}" class="nav-link {{ (request()->is('admin/banners')) ? 'active' : '' }}">
+            <a href="{{Route('attributes')}}" class="nav-link {{ (request()->is('admin/attributes')) ? 'active' : '' }}">
+              <i class="fab fa-product-hunt"></i>
+              <p>
+         Danh sách Thuộc tính
+           
+              </p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a href="{{Route('orders')}}" class="nav-link {{ (request()->is('admin/orders')) ? 'active' : '' }}">
               <i class="fas fa-shopping-cart"></i>
               <p> 
-             Carts
+            Danh sách Đơn hàng
            
               </p>
             </a>
@@ -266,7 +275,7 @@
             <a href="{{Route('contacts')}}" class="nav-link {{ (request()->is('admin/contacts')) ? 'active' : '' }}">
               <i class="fas fa-address-book"></i>
               <p>
-             contacts
+             Danh sách liên hệ
            
               </p>
             </a>
@@ -337,6 +346,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 @yield('script')
 
 </body>

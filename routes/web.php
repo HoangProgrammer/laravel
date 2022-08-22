@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\HomeController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\CategoryController as CategoryServer;
 use App\Http\Controllers\client\ContactClientController;
 use App\Http\Controllers\client\ProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -65,10 +67,8 @@ Route::group(['prefix' => ''], function () {
         // danh mục sản phẩm
         Route::group(['prefix' => '{cateName}', 'name' => 'shop'], function () {
             Route::get('', [CategoryController::class, 'index'])->name('shop');
-
             Route::get('/select', [ProductClient::class, 'select']);
             Route::get('/search', [ProductClient::class, 'search']);
-
             // chi tiết sản phẩm
             Route::get('{slug}', [ShopController::class, 'detail'])->name('detail');
         });
@@ -141,9 +141,7 @@ Route::get('/auth/logout', [AuthController::class, 'logout'])->name('getLout')->
 // admin    
 Route::middleware('authAdmin')->prefix('admin')->group(function () {
 
-    Route::get('', function () {
-        return view('server.dashboard');
-    })->name('admin');
+    Route::get('',[DashboardController::class, 'index'])->name('admin');
 
     Route::get('faker', function () {
         return view('list-user');
@@ -211,6 +209,22 @@ Route::middleware('authAdmin')->prefix('admin')->group(function () {
             ->name('contacts.delete');
     });
 
+    // contact
+    Route::group(['prefix' => 'attributes'], function () {
+        Route::get('', [AttributeController::class, 'index'])
+            ->name('attributes');
+
+        Route::get('create', [AttributeController::class, 'create'])
+            ->name('attributes.create');        
+        Route::post('store', [AttributeController::class, 'store'])
+            ->name('attributes.store');
+        Route::get('edit/{id}', [AttributeController::class, 'edit'])
+            ->name('attributes.edit');
+        Route::put('update/{id}', [AttributeController::class, 'update'])
+            ->name('attributes.update');
+        Route::delete('delete/{id}', [AttributeController::class, 'delete'])
+            ->name('attributes.delete');
+    });
 
 
 
@@ -235,4 +249,6 @@ Route::middleware('authAdmin')->prefix('admin')->group(function () {
         Route::get('role/{id}', [UserController::class, 'updateRole'])
             ->name('users.role');
     });
+
+
 });

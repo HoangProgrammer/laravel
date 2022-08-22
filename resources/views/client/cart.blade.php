@@ -154,7 +154,7 @@
                     // console.log(response.status);
                     // let price = response.data.price * response.data.qty
                     // // console.log(response.data.price*response.data.qty);
-                    // current.closest('.cart-border').find('.qtySS').text(price.toLocaleString('vi', {style : 'currency', currency : 'VND'}))
+                    // current.closest('.cart-border').find('.q tySS').text(price.toLocaleString('vi', {style : 'currency', currency : 'VND'}))
                     window.location.reload();
 
                 }

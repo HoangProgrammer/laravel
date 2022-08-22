@@ -25,6 +25,8 @@ class commentController extends Controller
         );
         # code...
     }
+
+
     //
     public function create(Request $request)
     {
@@ -49,6 +51,7 @@ class commentController extends Controller
 
 
         if ($valid->fails()) {
+            
             $errors=[];
             foreach ( $valid->errors()->all() as $error) {
                 $errors[]=$error;
@@ -60,10 +63,13 @@ class commentController extends Controller
                 ]
             );
 
+
         } else{
-              $comment=new Comment();
+
+            $comment=new Comment();
             $comment->fill($request->all());
             $comment->save(); 
+            
             return response()->json(
                 [
                     'data' =>Comment::with('user')
@@ -83,4 +89,27 @@ class commentController extends Controller
 
         # code...
     }
+
+
+    public function Pagination(Request $request)
+    {
+        if($request->page===''){
+            $request->page=0;
+        }else{
+            $request->page=($request->page - 1) * 5;
+        }
+        $comments=Comment::with('user')
+        ->where('product_id',$request->product_id)
+        ->orderBy('id' , 'desc')
+        ->limit(5)
+        ->offset($request->page)->get();
+        return response()->json([
+            'data'=> $comments  ,
+            'page'=>$request->page
+        ]);
+        
+        # code...
+    }
+
+
 }
